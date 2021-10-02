@@ -2,15 +2,22 @@ const createError = require('http-errors');
 const mongoose= require('mongoose');
 const express = require('express');
 const path = require('path');
+const passport= require("passport");
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 const Blood = require('./schemas/schema');
 const User = require('./schemas/userSchema');
 const app = express();
-app.use(express.json())
-mongoose.connect('mongodb://127.0.0.1:27017/bloodbank')
+require("./config/passport")(passport);
+app.use(express.json());
+mongoose.connect('mongodb://127.0.0.1:27017/bloodbank', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.set('useCreateIndex', true);
+// mongoose.connect('mongodb://127.0.0.1:27017/bloodbank')
+// app.get('/',(req, res)=>{
+//   res.sendFile(path.join(__dirname, 'views/home.jade'))
+// })
 app.get('/bloodstock',async(req, res)=>{
   const data =await Blood.find();
   res.send(data);
@@ -24,21 +31,19 @@ app.get('/user',async(req, res)=>{
 app.post('/user/add',async(req, res)=>{
   const body = req.body;
   console.log(req.body);
-  const newuser= new User({
-    usertype: body.usertype,
+  const newuser= new User({ 
     name: body.name,
     email: body.email,
     phonenumber: body.phonenumber,
     bloodtype: body.bloodtype,
-    id: body.id,
-  });
+    id: body.id,});
   const error =newuser.validateSync();
   if(error){
     res.statusCode= 400;
     res.send(error.message);
   }else{
-    const response = await newuser.save().catch((e)=>console.error(e));
-    res.send(response);
+    const response = await newuser.save().catch(err =>console.log(err));
+    res.send("newuser",response);
     
     switch(newuser.bloodtype){
       case "A+":
@@ -98,49 +103,44 @@ app.post('/user/req',async(req, res)=>{
     res.statusCode= 400;
     res.send(error.message);
   }else{
-    bloodtype = await Blood.findOne({bloodtype:newuser.bloodtype})
-    console.log(bloodtype);
-    if(bloodtype.quantity===0){
-      res.send("sorry bloodtype is out of stock try later ");
-    }else{
       const response = await newuser.save().catch((e)=>console.error(e));
-      res.send(response);
+       res.send(response);
 
-    }
+     
     
   
     switch(newuser.bloodtype){
       case "A+":
         return (
-          await Blood.update({_id: '614a134153587cbe5714648e', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
+          await Blood.UPDATE({_id: '614a134153587cbe5714648e', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
           console.log("user blood type",newuser.bloodtype)))
       case "B+":
         return (
-          await Blood.update({_id: '614a13a553587cbe5714648f', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
+          await Blood.UPDATE({_id: '614a13a553587cbe5714648f', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
           console.log("user blood type",newuser.bloodtype)))
       case "AB+":
         return (
-          await Blood.update({_id: '614a13d953587cbe57146490', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
+          await Blood.UPDATE({_id: '614a13d953587cbe57146490', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
           console.log("user blood type",newuser.bloodtype)))  
       case "AB-":
         return (
-          await Blood.update({_id: '614a15a953587cbe57146494', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
+          await Blood.UPDATE({_id: '614a15a953587cbe57146494', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
           console.log("user blood type",newuser.bloodtype))) 
       case "A-":
         return (
-          await Blood.update({_id: '614a159553587cbe57146492', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
+          await Blood.UPDATE({_id: '614a159553587cbe57146492', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
           console.log("user blood type",newuser.bloodtype))) 
       case "B-":
         return (
-          await Blood.update({_id: '614a159f53587cbe57146493', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
+          await Blood.UPDATE({_id: '614a159f53587cbe57146493', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
           console.log("user blood type",newuser.bloodtype)))   
       case "O-":
         return (
-          await Blood.update({_id: '614a15b553587cbe57146495', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
+          await Blood.UPDATE({_id: '614a15b553587cbe57146495', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
           console.log("user blood type",newuser.bloodtype)))    
       case "O+":
         return (
-          await Blood.update({_id: '614a15c353587cbe57146496', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
+          await Blood.UPDATE({_id: '614a15c353587cbe57146496', quantity: { $gt: 0 }}, {$inc: {quantity: -1 }},
           console.log("user blood type",newuser.bloodtype)))   
         default :
         return ""
@@ -193,12 +193,12 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

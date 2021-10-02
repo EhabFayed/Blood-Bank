@@ -10,28 +10,29 @@ html(lang='en')
     style
       include ./css/styles.css
   body.text-center
-    form.form-signin(action='/' method='post')
+    form.form(onsubmit='data()',method='post')
       img.mb-4(src='/images/logo.png' alt='logo' width='140' height='200')
       h1.h3.mb-3.font-weight-normal Become A Donor 
-      input.form-control.top(type='text' name='' placeholder='Name' required='' autofocus='')
-      input.form-control.middle(type='email' name='' placeholder='Email' required='')
-      input.form-control.middle(type='number' name='' placeholder='id number' required='')
-      input.form-control.middle(type='password' name='' placeholder='Password' required='')
-      input.form-control.bottom(type='password' name='' placeholder='Confirm Password' required='')
-      select.form-control.custom-select(name='bloodType' required='')
+      input.form-control.top(type='text' name='name' placeholder='Name' id='name' required='' autofocus='')
+      input.form-control.middle(type='email' name='email' placeholder='Email' id='email' required='')
+      input.form-control.middle(type='number' name='id' placeholder='id number' id='idnumber' required='')
+      input.form-control.middle(type='number' name='phonenumber' placeholder='phonenumber' id='phonenmber' required='')
+      select.form-control.custom-select(name='bloodtype' id='bloodtype' required='')
         optgroup(label='Blood Type')
           option(value='' disabled='' selected='' hidden='') Blood Type
-          option(value='') A+
-          option(value='') A-
-          option(value='') B+
-          option(value='') B-
-          option(value='') O+
-          option(value='') O-
-          option(value='') AB+
-          option(value='') AB-
+          option(value='A+') A+
+          option(value='A-') A-
+          option(value='B+') B+
+          option(value='B-') B-
+          option(value='B+') O+
+          option(value='O-') O-
+          option(value='AB+') AB+
+          option(value='AB-') AB-
       p
         | By signing up you agree to our 
         a(href='#' style='color:dodgerblue') Terms & Conditions
         | .
       button.btn.btn-lg.btn-danger.btn-block(type='submit') Sign Up
       p.mt-5.mb-3.text-muted © 2021
+  script(src='./script/donnerpage' charset='utf-8')
+

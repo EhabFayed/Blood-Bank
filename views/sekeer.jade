@@ -1,0 +1,38 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title Sign Up
+    // Bootstrap core CSS
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css' integrity='sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l' crossorigin='anonymous')
+    // Custom styles for this template
+    style
+      include ./css/styles.css
+  body.text-center
+    form.form(onsubmit='data()',method='post')
+      img.mb-4(src='/images/logo.png' alt='logo' width='140' height='200')
+      h1.h3.mb-3.font-weight-normal Become A Sekeer 
+      input.form-control.top(type='text' name='name' placeholder='Name' id='name' required='' autofocus='')
+      input.form-control.middle(type='email' name='email' placeholder='Email' id='email' required='')
+      input.form-control.middle(type='number' name='id' placeholder='id number' id='idnumber' required='')
+      input.form-control.middle(type='number' name='phonenumber' placeholder='phonenumber' id='phonenmber' required='')
+      select.form-control.custom-select(name='bloodtype' id='bloodtype' required='')
+        optgroup(label='Blood Type')
+          option(value='' disabled='' selected='' hidden='') Blood Type
+          option(value='A+') A+
+          option(value='A-') A-
+          option(value='B+') B+
+          option(value='B-') B-
+          option(value='B+') O+
+          option(value='O-') O-
+          option(value='AB+') AB+
+          option(value='AB-') AB-
+      p
+        | By signing up you agree to our 
+        a(href='#' style='color:dodgerblue') Terms & Conditions
+        | .
+      button.btn.btn-lg.btn-danger.btn-block(type='submit') Sign Up
+      p.mt-5.mb-3.text-muted © 2021
+  script(src='./script/sekeerpage' charset='utf-8')
+
